@@ -1,0 +1,11 @@
+Create NPM Project (npm init -y )
+Create index,css,js files
+install depemdencies , express, nodemon(dev dep.)
+create a express server (server.js)
+
+do frontend part
+install soket.io, setup socket.io server.js and client.js
+clinet send message logic in client.js
+recive message on server and brodcast to all client
+recive message on client and display it . scroolltobottom etc 
+

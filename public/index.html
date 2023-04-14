@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebChat App</title>
+    <base href="/">
+    <style>
+        *
+{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f8f8f8;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+}
+
+section.chat__section
+{
+    width: 500px;
+    max-width: 90%;
+    background:#fff;
+    box-shadow: 0 10px 15px -3px rgba(0,.0,.0,0.1),0 4px,6px,-2px rgba(0,.0,.0,0.05);
+}
+
+.brand
+{
+    padding: 20px;
+    background: #f1f1f1;
+    display: flex;
+    align-items: center;
+}
+
+.brand h1
+{
+    text-transform: uppercase;
+    font-size: 20px;
+    color: #444;
+    margin-left: 10px;
+
+}
+.message__area
+{
+    height: 600px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-top: 40px;
+}
+
+textarea
+{
+    width: 100%;
+    border: none;
+    padding: 20px;
+    font-size: 16px;
+    outline: none;
+    background: #f8f8f8;
+}
+.message
+{
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 40px;
+    max-width: 300px;
+    position: relative;
+
+}
+
+.incoming
+{
+    background:#8f88e8;
+    color: #fff;
+}
+
+.outgoing
+{
+    background:#e9eafd;
+    color: #787986;
+    margin-left: auto;
+
+}
+
+.message h4{
+    position: absolute;
+    top: -20px;
+    left: 0;
+    color:#333;
+    font-size: 14px;
+}
+
+
+
+
+
+    </style>
+     
+    <!-- <link rel="stylesheet" href="/style.css"> -->
+</head>
+<body>
+    <section class="chat__section">
+        <div class="brand">
+            <img height="40px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRR5SfivzGG7VOePywrg6mNKXI-O_WWOXdhpgwz6MMcEw&usqp=CAU&ec=48665699" alt="">
+            <h1>WebChat</h1>
+        </div>
+        <div class="message__area"></div>
+        <div>
+            <textarea id="textarea" col="30" rows="1" placeholder="Write a message..."></textarea>
+
+        </div>
+
+    </section>
+
+  
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+        let name;
+        let textarea = document.querySelector('#textarea')
+        let messageaArea = document.querySelector('.message__area')
+        do{
+            name = prompt('please enter your name : ')
+        }
+        while(!name)
+
+
+        textarea.addEventListener('keyup',(e)=>
+        {
+            if(e.key === 'Enter')
+            {
+                sendMessage(e.target.value)
+            }
+        })
+
+        function sendMessage(message)
+        {
+            let msg = 
+            {
+                user : name,
+                message : message.trim()
+            }
+
+            //append
+
+            appendMessage(msg,'outgoing')
+            textarea.value = ''
+            //scrolltobottom()
+
+            
+             
+
+            //send server
+            socket.emit('message',msg)
+
+        }
+
+        function appendMessage(msg,type)
+        {
+            let mainDiv = document.createElement('div')
+            let className = type
+            mainDiv.classList.add(className,'message')
+
+            let markup = `
+            <h4>${msg.user}</h4>
+            <p>${msg.message}</p>
+
+            `
+            mainDiv.innerHTML = markup
+            messageaArea.appendChild(mainDiv)
+
+
+        }
+
+
+        //recieve mesaage
+
+        socket.on('message',(msg)=>
+        {
+            appendMessage(msg,'incoming')
+            
+        })
+
+    //    function scrolltobottom ()
+    //     {
+    //         messageaArea.scrollTop = message.scrollHeight
+    //     }
+
+    </script>
+    
+</body>
+</html>
